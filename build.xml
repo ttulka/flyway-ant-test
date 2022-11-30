@@ -1,0 +1,59 @@
+<project name="FlywayAntPluginTest" xmlns:flyway="antlib:org.flywaydb.ant">
+
+    <path id="flyway.lib.path">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="flyway.classpath">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef uri="antlib:org.flywaydb.ant" resource="org/flywaydb/ant/antlib.xml"
+             classpathref="flyway.lib.path"/>
+
+    <target name="all-test" depends="migrate-test1,migrate-test2,validate-test"/>
+
+    <target name="migrate-test1" depends="-set-parameters">
+        <flyway:migrate>
+            <locations>
+                <location path="filesystem:./sql1"/>
+            </locations>
+            <schemas>
+                <schema name="schema1"/>
+            </schemas>
+        </flyway:migrate>
+    </target>
+
+    <target name="migrate-test2" depends="-set-parameters">        
+        <flyway:migrate>
+            <locations>
+                <location path="filesystem:./sql2"/>
+            </locations>
+            <schemas>
+                <schema name="schema2"/>
+            </schemas>
+        </flyway:migrate>
+    </target>
+
+    <target name="validate-test" depends="-set-parameters">
+        <flyway:validate>
+            <schemas>
+                <schema name="schema1"/>
+                <schema name="schema2"/>
+            </schemas>
+        </flyway:validate>
+    </target>
+
+    <target name="-set-parameters" >
+        <property name="flyway.url" value="jdbc:h2:./test.h2"/>
+        <property name="flyway.user" value="sa"/>
+        <property name="flyway.password" value=""/>
+        <property name="flyway.cleanDisabled" value="false"/>
+        <property name="flyway.loggers" value="console"/><!-- comment me out to make logs disappear -->
+    </target>
+
+</project>
